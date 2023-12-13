@@ -1,21 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stock_market_scan/src/controller/services/data_services.dart';
-import 'package:stock_market_scan/src/core/dio/dio_client.dart';
+import 'package:stock_market_scan/src/core/constants/enums.dart';
 import 'package:stock_market_scan/src/model/stock_market_data_model.dart';
 
-enum ApiStatus { initial, loading, success, failure }
-
-extension ApiStatusX on ApiStatus {
-  bool get isInitial => this == ApiStatus.initial;
-  bool get isLoading => this == ApiStatus.loading;
-  bool get isSuccess => this == ApiStatus.success;
-  bool get isFailure => this == ApiStatus.failure;
-}
-
 class DataProvider extends ChangeNotifier {
-  late DioClient client;
-  DataProvider({required this.client});
-
   List<StockMarketDataModel> stockMarketDataModelDataList = [];
   ApiStatus apiStatus = ApiStatus.initial;
   StockMarketDataModel? selectedStockModel;
@@ -33,10 +21,10 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Initialized Data Service instance inside this function as there was only one api call, for multiple api calls better approch is to use a dependency injection like "get it" 
+  /// Initialized Data Service instance inside this function as there was only one api call, for multiple api calls better approach is to use a dependency injection like "get it"
 
   void getStockMarketDataModelData() async {
-    final dataServices = DataServices(client: client);
+    final dataServices = DataServices();
     try {
       apiStatus = ApiStatus.loading;
       notifyListeners();
@@ -48,5 +36,12 @@ class DataProvider extends ChangeNotifier {
       notifyListeners();
       throw (Exception(e));
     }
+  }
+}
+
+extension DataProviderX on DataProvider {
+  Variable? get getVariableData {
+    return selectedCriterion?.variable?.firstWhere(
+        (variableData) => variableData.variableName == selectedVariableSymbol);
   }
 }
