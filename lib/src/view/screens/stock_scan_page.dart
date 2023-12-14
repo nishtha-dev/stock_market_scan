@@ -66,8 +66,8 @@ class _StockScanPageState extends State<StockScanPage> {
                             .stockMarketDataModelDataList[index]
                             .getSubtitleColor,
                         onTap: () {
-                          provider.selectedStockModel =
-                              provider.stockMarketDataModelDataList[index];
+                          provider.selectedStockModelId =
+                              provider.stockMarketDataModelDataList[index].id;
                           Navigator.of(context)
                               .pushNamed(RouteEnum.stockCriteriaPage.toPath);
                         },

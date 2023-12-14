@@ -16,6 +16,8 @@ class StockMarketCriteria extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stockMarketData = Provider.of<DataProvider>(context, listen: true);
+    final StockMarketDataModel? selectedStockModel =
+        stockMarketData.getSelectedStockData;
     return Scaffold(
       appBar: AppBar(
         title: const TextLarge(text: 'Stock Criteria'),
@@ -33,11 +35,10 @@ class StockMarketCriteria extends StatelessWidget {
             width: double.infinity,
             color: AppColors.black2,
             child: StockDataCard(
-                title: stockMarketData.selectedStockModel?.name ?? '',
-                subtitle: stockMarketData.selectedStockModel?.tag ?? '',
+                title: selectedStockModel?.name ?? '',
+                subtitle: selectedStockModel?.tag ?? '',
                 subtitleColor:
-                    stockMarketData.selectedStockModel?.getSubtitleColor ??
-                        AppColors.paleGreen,
+                    selectedStockModel?.getSubtitleColor ?? AppColors.green,
                 onTap: () {},
                 isOnTap: false,
                 showDivider: false,
@@ -52,18 +53,16 @@ class StockMarketCriteria extends StatelessWidget {
                     SliverList.separated(
                         separatorBuilder: (BuildContext context, int index) =>
                             const AppDivider(),
-                        itemCount: stockMarketData
-                                .selectedStockModel?.criteria?.length ??
-                            0,
+                        itemCount: selectedStockModel?.criteria?.length ?? 0,
                         itemBuilder: (context, index) {
                           return CriteriaCard(
-                            criteriaData: stockMarketData
-                                .selectedStockModel?.criteria?[index],
+                            criteriaData: selectedStockModel?.criteria?[index],
                             onTap: (Criterion? criterion,
                                 String? selectedVariableName) {
                               stockMarketData.selectedCriterionData(
-                                  variableSymbol: selectedVariableName,
-                                  model: criterion);
+                                variableSymbol: selectedVariableName,
+                                criterionId: criterion?.id,
+                              );
                               Navigator.pushNamed(context,
                                   RouteEnum.stockCriteriaDetailsPage.toPath);
                             },

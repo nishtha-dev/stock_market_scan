@@ -6,17 +6,17 @@ import 'package:stock_market_scan/src/model/stock_market_data_model.dart';
 class DataProvider extends ChangeNotifier {
   List<StockMarketDataModel> stockMarketDataModelDataList = [];
   ApiStatus apiStatus = ApiStatus.initial;
-  StockMarketDataModel? selectedStockModel;
-  Criterion? selectedCriterion;
+  num? selectedStockModelId;
+  String? selectedCriterionId;
   String? selectedVariableSymbol;
 
-  set selectedStockModelData(StockMarketDataModel? model) {
-    selectedStockModel = model;
+  set setSelectedStockId(num? modelId) {
+    selectedStockModelId = modelId;
     notifyListeners();
   }
 
-  void selectedCriterionData({Criterion? model, String? variableSymbol}) {
-    selectedCriterion = model;
+  void selectedCriterionData({String? criterionId, String? variableSymbol}) {
+    selectedCriterionId = criterionId;
     selectedVariableSymbol = variableSymbol;
     notifyListeners();
   }
@@ -41,7 +41,19 @@ class DataProvider extends ChangeNotifier {
 
 extension DataProviderX on DataProvider {
   Variable? get getVariableData {
-    return selectedCriterion?.variable?.firstWhere(
-        (variableData) => variableData.variableName == selectedVariableSymbol);
+    Criterion? selectedCriterion = getSelectedStockDataCriterion;
+    return selectedCriterion?.variable?.firstWhere((variableData) =>
+        variableData.variableSymbol == selectedVariableSymbol);
+  }
+
+  StockMarketDataModel? get getSelectedStockData {
+    return stockMarketDataModelDataList
+        .firstWhere((stockData) => stockData.id == selectedStockModelId);
+  }
+
+  Criterion? get getSelectedStockDataCriterion {
+    StockMarketDataModel? selectedData = getSelectedStockData;
+    return selectedData?.criteria
+        ?.firstWhere((element) => element.id == selectedCriterionId);
   }
 }

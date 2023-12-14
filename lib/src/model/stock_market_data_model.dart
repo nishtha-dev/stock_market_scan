@@ -3,6 +3,7 @@ import 'package:stock_market_scan/src/core/constants/colors.dart';
 import 'package:stock_market_scan/src/core/constants/constants.dart';
 import 'package:stock_market_scan/src/core/constants/enums.dart';
 import 'package:stock_market_scan/src/core/models/varible_data_model.dart';
+import 'package:uuid/uuid.dart';
 
 class StockMarketDataModel with ChangeNotifier {
   num? id;
@@ -60,11 +61,13 @@ extension StockMarketDataModelX on StockMarketDataModel {
 
 class Criterion {
   CriteriaType? type;
+  String? id;
   String? text;
   List<Variable>? variable;
 
   Criterion({
     this.type,
+    this.id,
     this.text,
     this.variable,
   });
@@ -75,13 +78,14 @@ class Criterion {
 
     for (var i = 0; i < (variableList?.length ?? 0); i++) {
       variableList?[i] = {
-        "variable_type": variableKeysList?[i],
+        "variable_symbol": variableKeysList?[i],
         ...variableList[i]
       };
     }
 
     return Criterion(
       type: criteriaTypeData(json['type']),
+      id: json["id"] ?? const Uuid().v1(),
       text: json["text"],
       variable:
           variableList == null ? null : Variable.listFromJson(variableList),
@@ -91,6 +95,7 @@ class Criterion {
   Map<String, dynamic> toJson() => {
         "type": type,
         "text": text,
+        "id": id,
         "variable": variable?.fold({}, (previousValue, element) {
           num? index = variable?.indexOf(element);
           return ({
@@ -109,9 +114,9 @@ extension CriterionX on Criterion {
       VariableData variableData;
       if (element.contains('\$')) {
         Variable? currentVar =
-            variable?.firstWhere((e) => e.variableName == element);
+            variable?.firstWhere((e) => e.variableSymbol == element);
         variableData = VariableData(
-            variableSymbol: currentVar?.variableName ?? '',
+            variableSymbol: currentVar?.variableSymbol ?? '',
             variableValue: "\$${currentVar?.getDefaultVariableValue}");
       } else {
         variableData = VariableData(variableValue: element);
@@ -120,8 +125,6 @@ extension CriterionX on Criterion {
     }).toList();
     return finalCriteriaValueList;
   }
-
-  
 }
 
 class Variable {
@@ -129,7 +132,7 @@ class Variable {
   List<num>? values;
   String? studyType;
   String? parameterName;
-  String? variableName;
+  String? variableSymbol;
   num? minValue;
   num? maxValue;
   num? defaultValue;
@@ -142,7 +145,7 @@ class Variable {
     this.minValue,
     this.maxValue,
     this.defaultValue,
-    this.variableName,
+    this.variableSymbol,
   });
   static List<Variable> listFromJson(List<dynamic> data) {
     return data.map((jsonData) => Variable.fromJson(jsonData)).toList();
@@ -158,7 +161,7 @@ class Variable {
         minValue: json["min_value"],
         maxValue: json["max_value"],
         defaultValue: json["default_value"],
-        variableName: json["variable_type"],
+        variableSymbol: json["variable_symbol"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -170,7 +173,7 @@ class Variable {
         "min_value": minValue,
         "max_value": maxValue,
         "default_value": defaultValue,
-        "variable_type": variableName,
+        "variable_symbol": variableSymbol,
       };
 }
 
