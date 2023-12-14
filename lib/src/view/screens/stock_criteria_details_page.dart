@@ -14,9 +14,6 @@ class CriteriaDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final stockMarketData = Provider.of<DataProvider>(context, listen: true);
     final Variable? variableData = stockMarketData.getVariableData;
-    if (variableData?.type?.isValue ?? false) {
-      variableData?.values?.sort();
-    }
     return Scaffold(
       appBar: AppBar(
         title: const TextLarge(text: 'Stock Criteria'),
