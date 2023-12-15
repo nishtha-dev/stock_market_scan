@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_market_scan/src/controller/provider/data_provider.dart';
 import 'package:stock_market_scan/src/core/constants/colors.dart';
-import 'package:stock_market_scan/src/core/constants/route_utils.dart';
+import 'package:stock_market_scan/src/core/utils/utils.dart';
 import 'package:stock_market_scan/src/core/widgets/typography/text_large.dart';
 import 'package:stock_market_scan/src/model/stock_market_data_model.dart';
 import 'package:stock_market_scan/src/view/widgets/app_divider.dart';

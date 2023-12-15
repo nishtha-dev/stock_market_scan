@@ -1,16 +1,16 @@
-import 'dart:convert';
-
 import 'package:stock_market_scan/src/core/constants/endpoints.dart';
+import 'package:stock_market_scan/src/core/dio/dio_client.dart';
 import 'package:stock_market_scan/src/model/stock_market_data_model.dart';
-import 'package:http/http.dart' as http;
 
 class DataServices {
+  final DioClient client;
+  DataServices({
+    required this.client,
+  });
   Future<List<StockMarketDataModel>> getJsonData() async {
     try {
-      final response = await http
-          .get(Uri.parse("${EndPoints.baseUrl}${EndPoints.dataPoint}"));
-      final model =
-          StockMarketDataModel.listFromJson(jsonDecode(response.body));
+      final response = await client.dio.get(EndPoints.dataPoint);
+      final model = StockMarketDataModel.listFromJson(response.data);
       return model;
     } on Exception catch (e) {
       throw (Exception(e));

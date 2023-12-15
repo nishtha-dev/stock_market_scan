@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:stock_market_scan/src/controller/services/data_services.dart';
 import 'package:stock_market_scan/src/core/constants/enums.dart';
+import 'package:stock_market_scan/src/core/dio/dio_client.dart';
 import 'package:stock_market_scan/src/model/stock_market_data_model.dart';
 
 class DataProvider extends ChangeNotifier {
+  final DioClient client;
+  DataProvider({
+    required this.client,
+  });
   List<StockMarketDataModel> stockMarketDataModelDataList = [];
   ApiStatus apiStatus = ApiStatus.initial;
   num? selectedStockModelId;
@@ -24,7 +29,7 @@ class DataProvider extends ChangeNotifier {
   /// Initialized Data Service instance inside this function as there was only one api call, for multiple api calls better approach is to use a dependency injection like "get it"
 
   void getStockMarketDataModelData() async {
-    final dataServices = DataServices();
+    final dataServices = DataServices(client: client);
     try {
       apiStatus = ApiStatus.loading;
       notifyListeners();
